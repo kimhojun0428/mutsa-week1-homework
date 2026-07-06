@@ -5,6 +5,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import mutsa.delivery.global.apiPayload.code.CreditErrorCode;
+import mutsa.delivery.global.apiPayload.exception.ProjectException;
 import mutsa.delivery.global.common.BaseTimeEntity;
 
 @Entity
@@ -52,5 +54,16 @@ public class User extends BaseTimeEntity {
         if (password != null && !password.isBlank()) {
             this.password = password;
         }
+    }
+
+    public void chargeCredit(long amount) {
+        this.credit += amount;
+    }
+
+    public void useCredit(long amount) {
+        if (this.credit < amount) {
+            throw new ProjectException(CreditErrorCode.INSUFFICIENT_CREDIT);
+        }
+        this.credit -= amount;
     }
 }
