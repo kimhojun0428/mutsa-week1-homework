@@ -14,8 +14,13 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long userId;
-    private Long shopId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id",  nullable = false)
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "shop_id",  nullable = false)
+    private Shop shop;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_group_id")
@@ -26,4 +31,12 @@ public class Order {
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
+
+    public Long getTotalPrice(){
+        return this.orderItems.stream().mapToLong(OrderItem::getTotalPrice).sum();
+    }
+
+    public void cancelOrder(){
+        this.orderstatus = OrderStatus.CANCELED;
+    }
 }
