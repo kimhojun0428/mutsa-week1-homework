@@ -1,14 +1,19 @@
 package mutsa.delivery.domain;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "shops")
@@ -24,6 +29,9 @@ public class Shop {
     private String contact;
     private String location;
 
+    @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Menu> menus = new ArrayList<>();
+
     @Builder(access = AccessLevel.PRIVATE)
     private Shop(String name, String contact, String location) {
         this.name = name;
@@ -37,5 +45,9 @@ public class Shop {
                 .contact(contact)
                 .location(location)
                 .build();
+    }
+
+    public void addMenu(Menu menu) {
+        this.menus.add(menu);
     }
 }

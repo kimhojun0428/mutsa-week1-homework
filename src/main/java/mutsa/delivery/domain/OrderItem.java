@@ -3,8 +3,6 @@ package mutsa.delivery.domain;
 import jakarta.persistence.*;
 import lombok.Getter;
 
-import java.awt.*;
-
 @Entity
 @Getter
 public class OrderItem {
