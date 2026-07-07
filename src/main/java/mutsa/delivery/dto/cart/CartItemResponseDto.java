@@ -15,7 +15,7 @@ public record CartItemResponseDto(
                 cartItem.getId(),
                 cartItem.getMenu().getId(),
                 cartItem.getMenuOption().getId(),
-                cartItem.getMenu().getMenuName(),
+                cartItem.getMenu().getName(),
                 cartItem.getUnitPrice(),
                 cartItem.getQuantity()
         );
