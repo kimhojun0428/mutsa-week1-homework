@@ -70,7 +70,7 @@ public class CartItem {
 
     /** 단가 = 메뉴 가격 + 옵션 추가금액, 소계 = 단가 * 수량 */
     public long getUnitPrice() {
-        return this.menu.getPrice() + this.menuOption.getExtraPrice();
+        return this.menu.getPrice() + this.menuOption.getAdditionalPrice();
     }
 
     public long calculatePrice() {
