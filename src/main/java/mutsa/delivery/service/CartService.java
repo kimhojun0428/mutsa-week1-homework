@@ -16,7 +16,6 @@ import mutsa.delivery.global.apiPayload.code.UserErrorCode;
 import mutsa.delivery.global.apiPayload.exception.ProjectException;
 import mutsa.delivery.repository.CartItemRepository;
 import mutsa.delivery.repository.CartRepository;
-import mutsa.delivery.repository.MenuOptionRepository;
 import mutsa.delivery.repository.MenuRepository;
 import mutsa.delivery.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -26,8 +25,8 @@ import java.util.Optional;
 
 /**
  * 장바구니 서비스.
- * <p>Menu·MenuOption 및 MenuRepository·MenuOptionRepository는 팀원(메뉴 도메인) 담당입니다.
- * 통합 규격은 프로젝트 루트의 INTEGRATION.md 참고.
+ * <p>Menu·MenuOption 및 MenuRepository는 메뉴 도메인(팀원) 담당입니다.
+ * MenuOption은 별도 Repository 없이 Menu.getOptions()로 조회합니다.
  */
 @Service
 @Transactional(readOnly = true)
@@ -38,7 +37,6 @@ public class CartService {
     private final CartItemRepository cartItemRepository;
     private final UserRepository userRepository;
     private final MenuRepository menuRepository;
-    private final MenuOptionRepository menuOptionRepository;
 
     @Transactional
     public CartItemResponseDto addMenuToCart(Long userId, AddCartItemRequestDto requestDto) {
@@ -52,7 +50,10 @@ public class CartService {
         Menu menu = menuRepository.findById(requestDto.menuId())
                 .orElseThrow(() -> new ProjectException(GeneralErrorCode.NOT_FOUND));
 
-        MenuOption menuOption = menuOptionRepository.findById(requestDto.menuOptionId())
+        // MenuOption은 해당 Menu에 속한 옵션 중에서 조회 (별도 Repository 없음)
+        MenuOption menuOption = menu.getOptions().stream()
+                .filter(option -> option.getId().equals(requestDto.menuOptionId()))
+                .findFirst()
                 .orElseThrow(() -> new ProjectException(GeneralErrorCode.NOT_FOUND));
 
         Optional<CartItem> optionalCartItem =
