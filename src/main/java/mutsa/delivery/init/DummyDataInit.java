@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import mutsa.delivery.domain.Menu;
 import mutsa.delivery.domain.MenuOption;
 import mutsa.delivery.domain.Shop;
+import mutsa.delivery.domain.ShopCategory;
 import mutsa.delivery.domain.User;
 import mutsa.delivery.repository.MenuRepository;
 import mutsa.delivery.repository.ShopRepository;
@@ -37,8 +38,8 @@ public class DummyDataInit implements CommandLineRunner {
         }
 
         if (shopRepository.count() == 0) {
-            Shop shop1 = Shop.create("냠냠 분식", "02-320-0001", "T101");
-            Shop shop2 = Shop.create("왕꼬치", "02-320-0002", "T102");
+            Shop shop1 = Shop.create("냠냠 분식", "02-320-0001", "T101", ShopCategory.SNACK);
+            Shop shop2 = Shop.create("왕꼬치", "02-320-0002", "T102", ShopCategory.ETC);
             shopRepository.save(shop1);
             shopRepository.save(shop2);
 

@@ -2,6 +2,8 @@ package mutsa.delivery.domain;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -29,21 +31,26 @@ public class Shop {
     private String contact;
     private String location;
 
+    @Enumerated(EnumType.STRING)
+    private ShopCategory category;
+
     @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Menu> menus = new ArrayList<>();
 
     @Builder(access = AccessLevel.PRIVATE)
-    private Shop(String name, String contact, String location) {
+    private Shop(String name, String contact, String location, ShopCategory category) {
         this.name = name;
         this.contact = contact;
         this.location = location;
+        this.category = category;
     }
 
-    public static Shop create(String name, String contact, String location) {
+    public static Shop create(String name, String contact, String location, ShopCategory category) {
         return Shop.builder()
                 .name(name)
                 .contact(contact)
                 .location(location)
+                .category(category)
                 .build();
     }
 
