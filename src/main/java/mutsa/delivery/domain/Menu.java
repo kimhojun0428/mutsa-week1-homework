@@ -15,6 +15,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import mutsa.delivery.global.apiPayload.code.GeneralErrorCode;
+import mutsa.delivery.global.apiPayload.exception.ProjectException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,5 +79,17 @@ public class Menu {
 
     public void addOption(MenuOption option) {
         this.options.add(option);
+    }
+
+    public void decreaseStock(Integer quantity) {
+        if (quantity == null || quantity <= 0) {
+            throw new ProjectException(GeneralErrorCode.INVALID_REQUEST);
+        }
+
+        if (this.stock == null || this.stock < quantity) {
+            throw new ProjectException(GeneralErrorCode.INVALID_REQUEST);
+        }
+
+        this.stock -= quantity;
     }
 }

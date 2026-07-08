@@ -112,6 +112,17 @@ public class CartService {
         cartItemRepository.delete(cartItem);
     }
 
+    /** 사용자의 장바구니를 통째로 비운다 (Cart는 유지, 항목만 cartId로 일괄 삭제). */
+    @Transactional
+    public void clearCart(Long userId) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ProjectException(UserErrorCode.USER_NOT_FOUND));
+
+        cartRepository.findByUser(user)
+                .ifPresent(cart -> cartItemRepository.deleteAllByCart_Id(cart.getId()));
+    }
+
     private void verifyStock(Menu menu, int requiredQuantity) {
         Integer stock = menu.getStock();
         if (stock != null && stock < requiredQuantity) {
