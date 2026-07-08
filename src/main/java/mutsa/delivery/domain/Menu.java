@@ -92,4 +92,16 @@ public class Menu {
 
         this.stock -= quantity;
     }
+
+    public void increaseStock(Integer quantity) {
+        if (quantity == null || quantity <= 0) {
+            throw new ProjectException(GeneralErrorCode.INVALID_REQUEST);
+        }
+
+        if (this.stock == null) {
+            throw new ProjectException(GeneralErrorCode.INVALID_REQUEST);
+        }
+
+        this.stock += quantity;
+    }
 }
