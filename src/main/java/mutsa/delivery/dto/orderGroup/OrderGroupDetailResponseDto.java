@@ -21,7 +21,7 @@ public record OrderGroupDetailResponseDto(
 
     public record OrderItemDto(
             String menuName,       // 주문 당시 메뉴명 스냅샷
-            Integer unitPrice,     // 개당 가격 스냅샷
+            Long unitPrice,     // 개당 가격 스냅샷
             Integer quantity,      // 수량
             String optionName,     // 옵션명 스냅샷
             Long additionalPrice   // 옵션 추가금액 스냅샷

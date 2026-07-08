@@ -1,5 +1,6 @@
-package mutsa.delivery.domain;
+package mutsa.delivery.repository;
 
+import mutsa.delivery.domain.OrderGroup;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

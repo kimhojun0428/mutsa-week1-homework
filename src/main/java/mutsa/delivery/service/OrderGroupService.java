@@ -2,7 +2,7 @@ package mutsa.delivery.service;
 
 import lombok.RequiredArgsConstructor;
 import mutsa.delivery.domain.*;
-import mutsa.delivery.domain.OrderGroupRepository;
+import mutsa.delivery.repository.OrderGroupRepository;
 import mutsa.delivery.dto.orderGroup.OrderGroupDetailResponseDto;
 import mutsa.delivery.dto.orderGroup.OrderGroupRequestDto;
 import mutsa.delivery.dto.orderGroup.OrderGroupResponseDto;
@@ -22,7 +22,7 @@ public class OrderGroupService {
     private final OrderGroupRepository orderGroupRepository;
     private final CreditHistoryRepository creditHistoryRepository;
     private final CartRepository cartRepository;
-    private final CartItemRepository cartItemRepository;
+    private final CartService cartService;
     private final UserRepository userRepository;
     private final AddressRepository addressRepository;
 
@@ -43,41 +43,54 @@ public class OrderGroupService {
         // 크레딧 차감
         user.useCredit(orderGroup.getTotalPrice());
 
-        // 재고 차감 로직
         orderGroupRepository.save(orderGroup);
 
         // 크레딧 히스토리 생성 및 저장
         CreditHistory creditHistory = CreditHistory.of(user, orderGroup.getTotalPrice(), CreditHistoryType.USE);
         creditHistoryRepository.save(creditHistory);
 
-        cartItemRepository.deleteAllByCartId(cart.getId());
+        cartService.clearCart(userId);
 
         return new OrderGroupResponseDto(orderGroup.getId());
     }
 
     public OrderGroupDetailResponseDto getOrderGroupDetail(Long orderGroupId) {
-        // 1. Fetch Join 쿼리로 주문그룹, 하위 주문, 상점 정보를 한 번에 가져옴
+
         OrderGroup orderGroup = orderGroupRepository.findDetailById(orderGroupId)
                 .orElseThrow(() -> new ProjectException(OrderErrorCode.ORDER_NOT_FOUND));
 
-        // 2. 엔티티 구조를 DTO 트리 구조로 변환
-        List<OrderGroupDetailResponseDto.OrderDetailDto> orderDetails = orderGroup.getOrders().stream()
+        List<OrderGroupDetailResponseDto.OrderDetailDto> orderDetailDtos = orderGroup.getOrders().stream()
                 .map(order -> {
-                    // Batch Size 설정 덕분에 이 지점에서 orderItem 쿼리가 N번 나가지 않고 1번만 나갑니다.
+
+
                     List<OrderGroupDetailResponseDto.OrderItemDto> itemDtos = order.getOrderItems().stream()
                             .map(item -> new OrderGroupDetailResponseDto.OrderItemDto(
-                                    item.getMenuName(), item.getUnitPrice(), item.getQuantity(),
-                                    item.getOptionName(), item.getAdditionalPrice()))
+                                    item.getMenuName(),
+                                    item.getUnitPrice(),
+                                    item.getQuantity(),
+                                    item.getOptionName(),
+                                    item.getAdditionalPrice()
+                            ))
                             .toList();
 
                     return new OrderGroupDetailResponseDto.OrderDetailDto(
-                            order.getId(), order.getShop().getName(), order.getOrderStatus().name(), itemDtos);
+                            order.getId(),
+                            order.getShop().getName(),
+                            order.getOrderStatus().name(),
+                            itemDtos
+                    );
                 })
                 .toList();
 
         return new OrderGroupDetailResponseDto(
-                orderGroup.getId(), orderGroup.getTotalPrice(), orderGroup.getAddress(),
-                orderGroup.getAddressName(), orderGroup.getPhone(), orderGroup.getCreatedAt(), orderDetails);
+                orderGroup.getId(),
+                orderGroup.getTotalPrice(),
+                orderGroup.getAddress(),
+                orderGroup.getAddressName(),
+                orderGroup.getPhone(),
+                orderGroup.getCreatedAt(),
+                orderDetailDtos
+        );
     }
 
     @Transactional
@@ -89,8 +102,7 @@ public class OrderGroupService {
 
         orderGroup.getOrders().forEach(order ->
                 order.getOrderItems().forEach(orderItem -> {
-                    // Menu 엔티티 내부에 정의된 재고 증가 메서드 호출
-                    //orderItem.getMenu().increaseStock(orderItem.getQuantity());
+                    orderItem.getMenu().increaseStock(orderItem.getQuantity());
                 })
         );
 

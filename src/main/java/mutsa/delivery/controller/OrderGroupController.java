@@ -2,6 +2,7 @@ package mutsa.delivery.controller;
 
 import lombok.RequiredArgsConstructor;
 import mutsa.delivery.controller.docs.OrderGroupApiDocs;
+import mutsa.delivery.dto.orderGroup.OrderGroupDetailResponseDto;
 import mutsa.delivery.dto.orderGroup.OrderGroupRequestDto;
 import mutsa.delivery.dto.orderGroup.OrderGroupResponseDto;
 import mutsa.delivery.global.apiPayload.GlobalResponse;
@@ -30,11 +31,21 @@ public class OrderGroupController implements OrderGroupApiDocs {
     }
 
     @Override
-    @PostMapping("/{orderGroupId}")
-    public ResponseEntity<GlobalResponse<Void>> cancelOrderGroup(@PathVariable Long orderGroupId) {
+    @PatchMapping("/{orderGroupId}")
+    public ResponseEntity<GlobalResponse<Void>> cancelOrderGroup(
+            @PathVariable("orderGroupId") Long orderGroupId
+    ) {
         orderGroupService.cancelOrderGroup(orderGroupId);
-
         return ResponseEntity.ok(GlobalResponse.onSuccess());
     }
 
+    @Override
+    @GetMapping("/{orderGroupId}")
+    public ResponseEntity<GlobalResponse<OrderGroupDetailResponseDto>> getOrderGroupDetail(
+            @PathVariable Long orderGroupId
+    ) {
+        OrderGroupDetailResponseDto responseDto = orderGroupService.getOrderGroupDetail(orderGroupId);
+
+        return ResponseEntity.ok(GlobalResponse.onSuccess(responseDto));
+    }
 }
