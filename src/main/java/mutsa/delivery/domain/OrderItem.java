@@ -1,10 +1,15 @@
 package mutsa.delivery.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.*;
+
+import java.awt.*;
 
 @Entity
 @Getter
+@Builder(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderItem {
 
     @Id
@@ -20,8 +25,28 @@ public class OrderItem {
     private Menu menu;
 
     private String menuName;
+    private String description;
     private Long unitPrice;
-    private Long quantity;
+    private int quantity;
     private String optionName;
     private Long additionalPrice;
+
+    public Long getTotalPrice(){
+        return (unitPrice + additionalPrice) * quantity;
+    }
+
+    public static OrderItem createOrderItem(Order order, CartItem cartItem){
+        cartItem.getMenu().decreaseStock(cartItem.getQuantity());
+
+        return OrderItem.builder()
+                .order(order)
+                .menu(cartItem.getMenu())
+                .menuName(cartItem.getMenu().getName())
+                .description(cartItem.getMenu().getDescription())
+                .unitPrice(cartItem.getMenu().getPrice())
+                .quantity(cartItem.getQuantity())
+                .optionName(cartItem.getMenuOption().getName())
+                .additionalPrice(cartItem.getMenuOption().getAdditionalPrice())
+                .build();
+    }
 }
