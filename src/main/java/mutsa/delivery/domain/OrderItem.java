@@ -1,15 +1,15 @@
 package mutsa.delivery.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 import java.awt.*;
 
 @Entity
 @Getter
 @Builder(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderItem {
 
     @Id
@@ -36,6 +36,7 @@ public class OrderItem {
     }
 
     public static OrderItem createOrderItem(Order order, CartItem cartItem){
+        cartItem.getMenu().decreaseStock(cartItem.getQuantity());
 
         return OrderItem.builder()
                 .order(order)
