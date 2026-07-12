@@ -3,7 +3,6 @@ package mutsa.delivery.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import mutsa.delivery.controller.docs.UserApiDocs;
-import mutsa.delivery.dto.user.SignUpRequestDto;
 import mutsa.delivery.dto.user.UpdateUserRequestDto;
 import mutsa.delivery.dto.user.UserResponseDto;
 import mutsa.delivery.global.apiPayload.GlobalResponse;
@@ -18,18 +17,6 @@ import org.springframework.web.bind.annotation.*;
 public class UserController implements UserApiDocs {
 
     private final UserService userService;
-
-    @Override
-    @PostMapping
-    public ResponseEntity<GlobalResponse<UserResponseDto>> signUp(
-            @Valid
-            @RequestBody SignUpRequestDto requestDto
-    ) {
-        UserResponseDto responseDto = userService.signUp(requestDto);
-
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(GlobalResponse.onSuccessCreate(responseDto));
-    }
 
     @Override
     @GetMapping

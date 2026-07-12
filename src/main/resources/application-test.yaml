@@ -11,3 +11,7 @@ spring:
   h2:
     console:
       enabled: true
+
+jwt:
+  secret: ${JWT_SECRET:test-only-secret-key-do-not-use-in-production-1234567890}
+  expiration-ms: 3600000

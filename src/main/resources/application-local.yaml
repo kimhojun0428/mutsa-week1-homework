@@ -13,3 +13,7 @@ spring:
   h2:
     console:
       enabled: true
+
+# 로컬 개발 편의를 위한 기본 시크릿(HS256이라 32바이트 이상 필요). 실제 배포에서는 JWT_SECRET 환경변수를 반드시 주입한다.
+jwt:
+  secret: ${JWT_SECRET:local-dev-only-secret-key-do-not-use-in-production-1234567890}

@@ -10,6 +10,7 @@ import mutsa.delivery.repository.MenuRepository;
 import mutsa.delivery.repository.ShopRepository;
 import mutsa.delivery.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,14 +23,15 @@ public class DummyDataInit implements CommandLineRunner {
     private final UserRepository userRepository;
     private final ShopRepository shopRepository;
     private final MenuRepository menuRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
     public void run(String... args) throws Exception {
         if (userRepository.count() == 0) {
-            User user1 = User.create("kimmutsa@mutsa.com", "12345678", "김멋사");
-            User user2 = User.create("leehongik@hongik.ac.kr", "87654321", "이홍익");
-            User user3 = User.create("parkchulsu@naver.com", "abcdefgh", "박철수");
+            User user1 = User.create("kimmutsa@mutsa.com", passwordEncoder.encode("12345678"), "김멋사");
+            User user2 = User.create("leehongik@hongik.ac.kr", passwordEncoder.encode("87654321"), "이홍익");
+            User user3 = User.create("parkchulsu@naver.com", passwordEncoder.encode("abcdefgh"), "박철수");
             userRepository.save(user1);
             userRepository.save(user2);
             userRepository.save(user3);
