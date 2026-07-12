@@ -2,12 +2,12 @@ package mutsa.delivery.service;
 
 import lombok.RequiredArgsConstructor;
 import mutsa.delivery.domain.User;
-import mutsa.delivery.dto.user.SignUpRequestDto;
 import mutsa.delivery.dto.user.UpdateUserRequestDto;
 import mutsa.delivery.dto.user.UserResponseDto;
 import mutsa.delivery.global.apiPayload.code.UserErrorCode;
 import mutsa.delivery.global.apiPayload.exception.ProjectException;
 import mutsa.delivery.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,23 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
-
-    @Transactional
-    public UserResponseDto signUp(SignUpRequestDto requestDto) {
-
-        if (userRepository.existsByEmail(requestDto.email())) {
-            throw new ProjectException(UserErrorCode.EMAIL_ALREADY_EXISTS);
-        }
-
-        User user = User.create(
-                requestDto.email(),
-                requestDto.password(),
-                requestDto.name()
-        );
-        userRepository.save(user);
-
-        return UserResponseDto.from(user);
-    }
+    private final PasswordEncoder passwordEncoder;
 
     public UserResponseDto getMyInfo(Long userId) {
 
@@ -49,7 +33,12 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ProjectException(UserErrorCode.USER_NOT_FOUND));
 
-        user.updateInfo(requestDto.name(), requestDto.password());
+        String password = requestDto.password();
+        String encodedPassword = (password != null && !password.isBlank())
+                ? passwordEncoder.encode(password)
+                : null;
+
+        user.updateInfo(requestDto.name(), encodedPassword);
 
         return UserResponseDto.from(user);
     }
