@@ -46,8 +46,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 Map<String, Object> body = new HashMap<>();
                 body.put("success", false);
-                body.put("code", e.getErrorCode().toString()); // EXPIRED_TOKEN 또는 INVALID_TOKEN 매핑
-                body.put("message", e.getMessage());
+                body.put("code", e.getErrorCode().getCode());
+                body.put("message", e.getErrorCode().getMessage());
                 body.put("data", null);
                 body.put("error", null);
 
