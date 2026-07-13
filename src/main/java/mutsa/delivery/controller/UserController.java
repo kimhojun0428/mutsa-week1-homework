@@ -6,6 +6,7 @@ import mutsa.delivery.controller.docs.UserApiDocs;
 import mutsa.delivery.dto.user.UpdateUserRequestDto;
 import mutsa.delivery.dto.user.UserResponseDto;
 import mutsa.delivery.global.apiPayload.GlobalResponse;
+import mutsa.delivery.global.config.security.AuthUser;
 import mutsa.delivery.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +20,9 @@ public class UserController implements UserApiDocs {
     private final UserService userService;
 
     @Override
-    @GetMapping
+    @GetMapping("/me")
     public ResponseEntity<GlobalResponse<UserResponseDto>> getMyInfo(
-            @RequestHeader("X-User-Id") Long userId
+            @AuthUser Long userId
     ) {
         UserResponseDto responseDto = userService.getMyInfo(userId);
 
@@ -29,9 +30,9 @@ public class UserController implements UserApiDocs {
     }
 
     @Override
-    @PatchMapping
+    @PatchMapping("/me")
     public ResponseEntity<GlobalResponse<UserResponseDto>> updateMyInfo(
-            @RequestHeader("X-User-Id") Long userId,
+            @AuthUser Long userId,
             @Valid
             @RequestBody UpdateUserRequestDto requestDto
     ) {
@@ -42,9 +43,9 @@ public class UserController implements UserApiDocs {
     }
 
     @Override
-    @DeleteMapping
+    @DeleteMapping("/me")
     public ResponseEntity<GlobalResponse<Void>> deleteUser(
-            @RequestHeader("X-User-Id") Long userId
+            @AuthUser Long userId
     ) {
         userService.deleteUser(userId);
 

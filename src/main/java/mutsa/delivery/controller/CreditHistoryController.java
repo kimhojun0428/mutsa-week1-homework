@@ -6,6 +6,7 @@ import mutsa.delivery.controller.docs.CreditApiDocs;
 import mutsa.delivery.dto.credit.CreditChangeRequestDto;
 import mutsa.delivery.dto.credit.CreditHistoryResponseDto;
 import mutsa.delivery.global.apiPayload.GlobalResponse;
+import mutsa.delivery.global.config.security.AuthUser;
 import mutsa.delivery.service.CreditHistoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class CreditHistoryController implements CreditApiDocs {
     @Override
     @PostMapping
     public ResponseEntity<GlobalResponse<CreditHistoryResponseDto>> changeCredit(
-            @RequestHeader("X-User-Id") Long userId,
+            @AuthUser Long userId,
             @Valid
             @RequestBody CreditChangeRequestDto requestDto
     ) {
@@ -36,7 +37,7 @@ public class CreditHistoryController implements CreditApiDocs {
     @Override
     @GetMapping
     public ResponseEntity<GlobalResponse<List<CreditHistoryResponseDto>>> getHistories(
-            @RequestHeader("X-User-Id") Long userId
+            @AuthUser Long userId
     ) {
         List<CreditHistoryResponseDto> responseDto = creditHistoryService.getHistories(userId);
 

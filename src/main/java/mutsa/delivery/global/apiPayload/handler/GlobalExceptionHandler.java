@@ -8,7 +8,6 @@ import mutsa.delivery.global.apiPayload.exception.ProjectException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -60,16 +59,6 @@ public class GlobalExceptionHandler {
             MethodArgumentTypeMismatchException e
     ) {
         BaseErrorCode errorCode = GeneralErrorCode.INVALID_TYPE;
-        return ResponseEntity.status(errorCode.getHttpStatus())
-                .body(GlobalResponse.onFailure(errorCode, null));
-    }
-
-    // 인증 헤더(X-User-Id) 누락 -> UNAUTHORIZED
-    @ExceptionHandler(MissingRequestHeaderException.class)
-    public ResponseEntity<GlobalResponse<Void>> handleMissingRequestHeaderException(
-            MissingRequestHeaderException e
-    ) {
-        BaseErrorCode errorCode = GeneralErrorCode.UNAUTHORIZED;
         return ResponseEntity.status(errorCode.getHttpStatus())
                 .body(GlobalResponse.onFailure(errorCode, null));
     }
