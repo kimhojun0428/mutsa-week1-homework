@@ -1,49 +1,61 @@
 package mutsa.delivery.global.config.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import mutsa.delivery.global.apiPayload.exception.ProjectException;
 import mutsa.delivery.global.jwt.JwtProvider;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
+    private final ObjectMapper objectMapper = new ObjectMapper(); // Jackson 2 고정
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        // 1. 요청 헤더에서 Authorization 값을 꺼낸다.
         String bearerToken = request.getHeader("Authorization");
 
-        // 2. 토큰이 존재하고 "Bearer "로 시작하는지 확인한다.
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            String token = bearerToken.substring(7); // "Bearer " 접두사를 제외한 순수 JWT 문자열만 추출
+            String token = bearerToken.substring(7);
 
-            // 3. JwtProvider를 사용하여 토큰 내부의 userId를 추출한다.
-            // 위조되었거나 만료된 토큰이라면 현준이가 만든 parseClaims() 내부에서 ProjectException을 던진다.
-            Long userId = jwtProvider.getUserId(token);
+            try {
+                Long userId = jwtProvider.getUserId(token);
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(userId, null, Collections.emptyList());
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            } catch (ProjectException e) {
+                // 필터 내부에서 예외를 처리하여 EXPIRED_TOKEN / INVALID_TOKEN 유지 및 반환
+                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                response.setCharacterEncoding("UTF-8");
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
-            // 4. 스프링 시큐리티 전용 인증 객체(Authentication)를 생성한다.
-            // 현준이의 가이드에 맞춰 principal 자리에 userId를 넣고, 비밀번호(credentials)는 null, 권한은 빈 리스트로 설정한다.
-            UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(userId, null, Collections.emptyList());
+                Map<String, Object> body = new HashMap<>();
+                body.put("success", false);
+                body.put("code", e.getErrorCode().toString()); // EXPIRED_TOKEN 또는 INVALID_TOKEN 매핑
+                body.put("message", e.getMessage());
+                body.put("data", null);
+                body.put("error", null);
 
-            // 5. 시큐리티 전용 저장소(SecurityContext)에 인증 객체를 보관한다.
-            // 여기에 객체가 존재해야 시큐리티 벽을 통과해 컨트롤러까지 요청이 도달한다.
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+                objectMapper.writeValue(response.getWriter(), body);
+                return; // 에러 발생 시 필터 체인 통과를 중단하고 즉시 리턴
+            }
         }
 
-        // 6. 다음 필터 거름망으로 요청을 넘긴다.
         filterChain.doFilter(request, response);
     }
 }
