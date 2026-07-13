@@ -54,15 +54,17 @@ public class OrderGroupService {
         return new OrderGroupResponseDto(orderGroup.getId());
     }
 
-    public OrderGroupDetailResponseDto getOrderGroupDetail(Long orderGroupId) {
+    public OrderGroupDetailResponseDto getOrderGroupDetail(Long orderGroupId, Long userId) {
 
         OrderGroup orderGroup = orderGroupRepository.findDetailById(orderGroupId)
                 .orElseThrow(() -> new ProjectException(OrderErrorCode.ORDER_NOT_FOUND));
 
+        if (!orderGroup.getUser().getId().equals(userId)) {
+            throw new ProjectException(OrderErrorCode.ORDER_NOT_FOUND);
+        }
+
         List<OrderGroupDetailResponseDto.OrderDetailDto> orderDetailDtos = orderGroup.getOrders().stream()
                 .map(order -> {
-
-
                     List<OrderGroupDetailResponseDto.OrderItemDto> itemDtos = order.getOrderItems().stream()
                             .map(item -> new OrderGroupDetailResponseDto.OrderItemDto(
                                     item.getMenuName(),
@@ -94,9 +96,13 @@ public class OrderGroupService {
     }
 
     @Transactional
-    public void cancelOrderGroup(Long orderGroupId){
+    public void cancelOrderGroup(Long orderGroupId, Long userId){
         OrderGroup orderGroup = orderGroupRepository.findById(orderGroupId)
                 .orElseThrow(() -> new ProjectException(OrderGroupErrorCode.ORDER_GROUP_NOT_FOUND));
+
+        if (!orderGroup.getUser().getId().equals(userId)) {
+            throw new ProjectException(OrderGroupErrorCode.ORDER_GROUP_NOT_FOUND);
+        }
 
         orderGroup.cancelOrders();
 

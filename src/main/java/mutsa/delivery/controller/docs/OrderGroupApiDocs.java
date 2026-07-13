@@ -1,6 +1,7 @@
 package mutsa.delivery.controller.docs;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter; // 💡 추가
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -12,6 +13,7 @@ import mutsa.delivery.dto.orderGroup.OrderGroupResponseDto;
 import mutsa.delivery.global.apiPayload.GlobalResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Tag(name = "OrderGroup API", description = "주문그룹 도메인 API")
 public interface OrderGroupApiDocs {
@@ -30,7 +32,11 @@ public interface OrderGroupApiDocs {
                     content = @Content(schema = @Schema(implementation = GlobalResponse.class))
             )
     })
-    ResponseEntity<GlobalResponse<OrderGroupResponseDto>> createOrderGroup(Long userId, OrderGroupRequestDto requestDto);
+
+    ResponseEntity<GlobalResponse<OrderGroupResponseDto>> createOrderGroup(
+            @Parameter(hidden = true) Long userId,
+            @RequestBody OrderGroupRequestDto requestDto
+    );
 
     @Operation(summary = "주문 취소", description = "주문 그룹 ID를 받아 하위 모든 주문을 취소하고 자원(크레딧, 재고)을 원복합니다.")
     @ApiResponses({
@@ -46,7 +52,11 @@ public interface OrderGroupApiDocs {
                     content = @Content(schema = @Schema(implementation = GlobalResponse.class))
             )
     })
-    ResponseEntity<GlobalResponse<Void>> cancelOrderGroup(@PathVariable("orderGroupId") Long orderGroupId);
+
+    ResponseEntity<GlobalResponse<Void>> cancelOrderGroup(
+            @Parameter(hidden = true) Long userId,
+            @PathVariable("orderGroupId") Long orderGroupId
+    );
 
     @Operation(summary = "주문 상세 조회", description = "주문그룹 ID를 받아 배송지 정보, 상점별 주문서, 상세 상품 내역을 트리 구조로 조회합니다.")
     @ApiResponses({
@@ -57,5 +67,9 @@ public interface OrderGroupApiDocs {
                     content = @Content(schema = @Schema(implementation = GlobalResponse.class))
             )
     })
-    ResponseEntity<GlobalResponse<OrderGroupDetailResponseDto>> getOrderGroupDetail(Long orderGroupId);
+
+    ResponseEntity<GlobalResponse<OrderGroupDetailResponseDto>> getOrderGroupDetail(
+            @Parameter(hidden = true) Long userId,
+            @PathVariable("orderGroupId") Long orderGroupId
+    );
 }
