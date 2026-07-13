@@ -1,6 +1,7 @@
 package mutsa.delivery.controller.docs;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -30,7 +31,7 @@ public interface CreditApiDocs {
                     content = @Content(schema = @Schema(implementation = GlobalResponse.class))
             )
     })
-    ResponseEntity<GlobalResponse<CreditHistoryResponseDto>> changeCredit(Long userId, CreditChangeRequestDto requestDto);
+    ResponseEntity<GlobalResponse<CreditHistoryResponseDto>> changeCredit(@Parameter(hidden = true) Long userId, CreditChangeRequestDto requestDto);
 
     @Operation(summary = "크레딧 내역 조회", description = "사용자의 크레딧 변동 내역을 최신순으로 조회합니다.")
     @ApiResponses({
@@ -41,5 +42,5 @@ public interface CreditApiDocs {
                     content = @Content(schema = @Schema(implementation = GlobalResponse.class))
             )
     })
-    ResponseEntity<GlobalResponse<List<CreditHistoryResponseDto>>> getHistories(Long userId);
+    ResponseEntity<GlobalResponse<List<CreditHistoryResponseDto>>> getHistories(@Parameter(hidden = true) Long userId);
 }

@@ -1,6 +1,7 @@
 package mutsa.delivery.controller.docs;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -31,7 +32,7 @@ public interface AddressApiDocs {
                     content = @Content(schema = @Schema(implementation = GlobalResponse.class))
             )
     })
-    ResponseEntity<GlobalResponse<AddressResponseDto>> createAddress(Long userId, AddAddressRequestDto requestDto);
+    ResponseEntity<GlobalResponse<AddressResponseDto>> createAddress(@Parameter(hidden = true) Long userId, AddAddressRequestDto requestDto);
 
     @Operation(summary = "단일 주소 조회", description = "특정 주소의 정보를 조회합니다.")
     @ApiResponses({
@@ -47,7 +48,7 @@ public interface AddressApiDocs {
                     content = @Content(schema = @Schema(implementation = GlobalResponse.class))
             )
     })
-    ResponseEntity<GlobalResponse<AddressResponseDto>> getAddress(Long userId, Long addressId);
+    ResponseEntity<GlobalResponse<AddressResponseDto>> getAddress(@Parameter(hidden = true) Long userId, Long addressId);
 
     @Operation(summary = "전체 주소 조회", description = "사용자의 모든 주소를 조회합니다.")
     @ApiResponses({
@@ -58,7 +59,7 @@ public interface AddressApiDocs {
                     content = @Content(schema = @Schema(implementation = GlobalResponse.class))
             )
     })
-    ResponseEntity<GlobalResponse<List<AddressResponseDto>>> getAddressList(Long userId);
+    ResponseEntity<GlobalResponse<List<AddressResponseDto>>> getAddressList(@Parameter(hidden = true) Long userId);
 
     @Operation(summary = "주소 정보 변경", description = "주소지 정보를 변경합니다.")
     @ApiResponses({
@@ -74,7 +75,7 @@ public interface AddressApiDocs {
                     content = @Content(schema = @Schema(implementation = GlobalResponse.class))
             )
     })
-    ResponseEntity<GlobalResponse<AddressResponseDto>> updateAddress(Long userId, Long addressId, UpdateAddressRequestDto requestDto);
+    ResponseEntity<GlobalResponse<AddressResponseDto>> updateAddress(@Parameter(hidden = true) Long userId, Long addressId, UpdateAddressRequestDto requestDto);
 
     @Operation(summary = "주소 삭제", description = "저장되어 있는 주소를 삭제합니다.")
     @ApiResponses({
@@ -90,5 +91,5 @@ public interface AddressApiDocs {
                     content = @Content(schema = @Schema(implementation = GlobalResponse.class))
             )
     })
-    ResponseEntity<GlobalResponse<Void>> deleteAddress(Long userId, Long addressId);
+    ResponseEntity<GlobalResponse<Void>> deleteAddress(@Parameter(hidden = true) Long userId, Long addressId);
 }

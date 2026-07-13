@@ -1,6 +1,7 @@
 package mutsa.delivery.controller.docs;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -30,7 +31,7 @@ public interface CartApiDocs {
                     content = @Content(schema = @Schema(implementation = GlobalResponse.class))
             )
     })
-    ResponseEntity<GlobalResponse<CartItemResponseDto>> addCartItem(Long userId, AddCartItemRequestDto requestDto);
+    ResponseEntity<GlobalResponse<CartItemResponseDto>> addCartItem(@Parameter(hidden = true) Long userId, AddCartItemRequestDto requestDto);
 
     @Operation(summary = "장바구니 조회", description = "사용자의 장바구니 항목과 총액/총수량을 조회합니다.")
     @ApiResponses({
@@ -41,7 +42,7 @@ public interface CartApiDocs {
                     content = @Content(schema = @Schema(implementation = GlobalResponse.class))
             )
     })
-    ResponseEntity<GlobalResponse<CartResponseDto>> getCart(Long userId);
+    ResponseEntity<GlobalResponse<CartResponseDto>> getCart(@Parameter(hidden = true) Long userId);
 
     @Operation(summary = "장바구니 수량 변경", description = "장바구니 항목의 수량을 변경합니다.")
     @ApiResponses({
@@ -57,7 +58,7 @@ public interface CartApiDocs {
                     content = @Content(schema = @Schema(implementation = GlobalResponse.class))
             )
     })
-    ResponseEntity<GlobalResponse<CartItemResponseDto>> updateCartItem(Long userId, Long itemId, UpdateQuantityRequestDto requestDto);
+    ResponseEntity<GlobalResponse<CartItemResponseDto>> updateCartItem(@Parameter(hidden = true) Long userId, Long itemId, UpdateQuantityRequestDto requestDto);
 
     @Operation(summary = "장바구니 항목 삭제", description = "장바구니에서 항목을 삭제합니다.")
     @ApiResponses({
@@ -73,5 +74,5 @@ public interface CartApiDocs {
                     content = @Content(schema = @Schema(implementation = GlobalResponse.class))
             )
     })
-    ResponseEntity<GlobalResponse<Void>> deleteCartItem(Long userId, Long itemId);
+    ResponseEntity<GlobalResponse<Void>> deleteCartItem(@Parameter(hidden = true) Long userId, Long itemId);
 }

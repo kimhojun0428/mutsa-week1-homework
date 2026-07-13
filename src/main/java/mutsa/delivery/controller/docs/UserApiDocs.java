@@ -1,6 +1,7 @@
 package mutsa.delivery.controller.docs;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -23,7 +24,7 @@ public interface UserApiDocs {
                     content = @Content(schema = @Schema(implementation = GlobalResponse.class))
             )
     })
-    ResponseEntity<GlobalResponse<UserResponseDto>> getMyInfo(Long userId);
+    ResponseEntity<GlobalResponse<UserResponseDto>> getMyInfo(@Parameter(hidden = true) Long userId);
 
     @Operation(summary = "사용자 정보 수정", description = "이름·비밀번호를 수정합니다. (전달된 값만 변경)")
     @ApiResponses({
@@ -34,7 +35,7 @@ public interface UserApiDocs {
                     content = @Content(schema = @Schema(implementation = GlobalResponse.class))
             )
     })
-    ResponseEntity<GlobalResponse<UserResponseDto>> updateMyInfo(Long userId, UpdateUserRequestDto requestDto);
+    ResponseEntity<GlobalResponse<UserResponseDto>> updateMyInfo(@Parameter(hidden = true) Long userId, UpdateUserRequestDto requestDto);
 
     @Operation(summary = "사용자 삭제", description = "로그인한 사용자를 삭제합니다.")
     @ApiResponses({
@@ -45,5 +46,5 @@ public interface UserApiDocs {
                     content = @Content(schema = @Schema(implementation = GlobalResponse.class))
             )
     })
-    ResponseEntity<GlobalResponse<Void>> deleteUser(Long userId);
+    ResponseEntity<GlobalResponse<Void>> deleteUser(@Parameter(hidden = true) Long userId);
 }

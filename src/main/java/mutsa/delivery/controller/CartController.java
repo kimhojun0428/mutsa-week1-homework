@@ -8,6 +8,7 @@ import mutsa.delivery.dto.cart.CartItemResponseDto;
 import mutsa.delivery.dto.cart.CartResponseDto;
 import mutsa.delivery.dto.cart.UpdateQuantityRequestDto;
 import mutsa.delivery.global.apiPayload.GlobalResponse;
+import mutsa.delivery.global.config.security.AuthUser;
 import mutsa.delivery.service.CartService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class CartController implements CartApiDocs {
     @Override
     @PostMapping("/items")
     public ResponseEntity<GlobalResponse<CartItemResponseDto>> addCartItem(
-            @RequestHeader("X-User-Id") Long userId,
+            @AuthUser Long userId,
             @Valid
             @RequestBody AddCartItemRequestDto requestDto
     ) {
@@ -36,7 +37,7 @@ public class CartController implements CartApiDocs {
     @Override
     @GetMapping
     public ResponseEntity<GlobalResponse<CartResponseDto>> getCart(
-            @RequestHeader("X-User-Id") Long userId
+            @AuthUser Long userId
     ) {
         CartResponseDto responseDto = cartService.getCart(userId);
 
@@ -46,7 +47,7 @@ public class CartController implements CartApiDocs {
     @Override
     @PatchMapping("/items/{itemId}")
     public ResponseEntity<GlobalResponse<CartItemResponseDto>> updateCartItem(
-            @RequestHeader("X-User-Id") Long userId,
+            @AuthUser Long userId,
             @PathVariable("itemId") Long itemId,
             @Valid
             @RequestBody UpdateQuantityRequestDto requestDto
@@ -59,7 +60,7 @@ public class CartController implements CartApiDocs {
     @Override
     @DeleteMapping("/items/{itemId}")
     public ResponseEntity<GlobalResponse<Void>> deleteCartItem(
-            @RequestHeader("X-User-Id") Long userId,
+            @AuthUser Long userId,
             @PathVariable("itemId") Long itemId
     ) {
         cartService.deleteCartItem(userId, itemId);

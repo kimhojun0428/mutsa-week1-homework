@@ -7,6 +7,7 @@ import mutsa.delivery.dto.address.AddAddressRequestDto;
 import mutsa.delivery.dto.address.AddressResponseDto;
 import mutsa.delivery.dto.address.UpdateAddressRequestDto;
 import mutsa.delivery.global.apiPayload.GlobalResponse;
+import mutsa.delivery.global.config.security.AuthUser;
 import mutsa.delivery.service.AddressService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class AddressController implements AddressApiDocs {
     @Override
     @PostMapping
     public ResponseEntity<GlobalResponse<AddressResponseDto>> createAddress(
-            @RequestHeader("X-User-Id") Long userId,
+            @AuthUser Long userId,
             @Valid
             @RequestBody AddAddressRequestDto requestDto
     ) {
@@ -37,7 +38,7 @@ public class AddressController implements AddressApiDocs {
     @Override
     @GetMapping("/{addressId}")
     public ResponseEntity<GlobalResponse<AddressResponseDto>> getAddress(
-            @RequestHeader("X-User-Id") Long userId,
+            @AuthUser Long userId,
             @PathVariable("addressId") Long addressId
     ) {
         AddressResponseDto responseDto = addressService.getAddress(userId, addressId);
@@ -48,7 +49,7 @@ public class AddressController implements AddressApiDocs {
     @Override
     @GetMapping
     public ResponseEntity<GlobalResponse<List<AddressResponseDto>>> getAddressList(
-            @RequestHeader("X-User-Id") Long userId
+            @AuthUser Long userId
     ) {
         List<AddressResponseDto> responseDto = addressService.getAllAddress(userId);
 
@@ -58,7 +59,7 @@ public class AddressController implements AddressApiDocs {
     @Override
     @PutMapping("/{addressId}")
     public ResponseEntity<GlobalResponse<AddressResponseDto>> updateAddress(
-            @RequestHeader("X-User-Id") Long userId,
+            @AuthUser Long userId,
             @PathVariable("addressId") Long addressId,
             @Valid
             @RequestBody UpdateAddressRequestDto requestDto
@@ -71,7 +72,7 @@ public class AddressController implements AddressApiDocs {
     @Override
     @DeleteMapping("/{addressId}")
     public ResponseEntity<GlobalResponse<Void>> deleteAddress(
-            @RequestHeader("X-User-Id") Long userId,
+            @AuthUser Long userId,
             @PathVariable("addressId") Long addressId
     ) {
         addressService.deleteAddress(userId, addressId);
