@@ -24,12 +24,14 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
-        response.setStatus(HttpServletResponse.SC_FORBIDDEN); // 403 상태코드 설정
+        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 
         Map<String, Object> body = new HashMap<>();
-        body.put("isSuccess", false);
-        body.put("code", "AUTH403");
+        body.put("success", false);
+        body.put("code", "FORBIDDEN");
         body.put("message", "해당 요청에 대한 접근 권한이 없습니다.");
+        body.put("data", null);
+        body.put("error", null);
 
         objectMapper.writeValue(response.getWriter(), body);
     }
