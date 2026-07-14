@@ -27,7 +27,7 @@ public interface CartApiDocs {
             ),
             @ApiResponse(
                     responseCode = "404",
-                    description = "사용자/메뉴/옵션 조회 실패",
+                    description = "사용자 없음(USER_404_1) / 메뉴 없음(CART_404_1) / 메뉴 옵션 없음(CART_404_2)",
                     content = @Content(schema = @Schema(implementation = GlobalResponse.class))
             )
     })

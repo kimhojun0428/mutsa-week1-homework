@@ -8,4 +8,6 @@ import java.util.List;
 public interface CreditHistoryRepository extends JpaRepository<CreditHistory, Long> {
 
     List<CreditHistory> findAllByUser_IdOrderByIdDesc(Long userId);
+
+    long deleteAllByUser_Id(Long userId);
 }

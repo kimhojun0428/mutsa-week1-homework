@@ -10,6 +10,8 @@ public enum CartErrorCode implements BaseErrorCode {
 
     CART_NOT_FOUND(HttpStatus.NOT_FOUND, "CART_404_1", "해당 장바구니를 찾을 수 없습니다."),
     CART_ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "CART_404_2", "장바구니 내 해당 항목을 찾을 수 없습니다."),
+    MENU_NOT_FOUND(HttpStatus.NOT_FOUND, "CART_404_1", "장바구니에 추가할 메뉴를 찾을 수 없습니다."),
+    MENU_OPTION_NOT_FOUND(HttpStatus.NOT_FOUND, "CART_404_2", "장바구니에 추가할 메뉴 옵션을 찾을 수 없습니다."),
     OUT_OF_STOCK(HttpStatus.BAD_REQUEST, "CART_400_1", "재고가 부족합니다.");
 
     private final HttpStatus httpStatus;

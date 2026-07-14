@@ -11,7 +11,6 @@ import mutsa.delivery.dto.cart.CartItemResponseDto;
 import mutsa.delivery.dto.cart.CartResponseDto;
 import mutsa.delivery.dto.cart.UpdateQuantityRequestDto;
 import mutsa.delivery.global.apiPayload.code.CartErrorCode;
-import mutsa.delivery.global.apiPayload.code.GeneralErrorCode;
 import mutsa.delivery.global.apiPayload.code.UserErrorCode;
 import mutsa.delivery.global.apiPayload.exception.ProjectException;
 import mutsa.delivery.repository.CartItemRepository;
@@ -48,13 +47,13 @@ public class CartService {
                 .orElseGet(() -> cartRepository.save(Cart.create(user)));
 
         Menu menu = menuRepository.findById(requestDto.menuId())
-                .orElseThrow(() -> new ProjectException(GeneralErrorCode.NOT_FOUND));
+                .orElseThrow(() -> new ProjectException(CartErrorCode.MENU_NOT_FOUND));
 
         // MenuOption은 해당 Menu에 속한 옵션 중에서 조회 (별도 Repository 없음)
         MenuOption menuOption = menu.getOptions().stream()
                 .filter(option -> option.getId().equals(requestDto.menuOptionId()))
                 .findFirst()
-                .orElseThrow(() -> new ProjectException(GeneralErrorCode.NOT_FOUND));
+                .orElseThrow(() -> new ProjectException(CartErrorCode.MENU_OPTION_NOT_FOUND));
 
         Optional<CartItem> optionalCartItem =
                 cartItemRepository.findByCartAndMenuAndMenuOption(cart, menu, menuOption);

@@ -5,6 +5,7 @@ import mutsa.delivery.global.config.security.CustomAccessDeniedHandler;
 import mutsa.delivery.global.config.security.CustomAuthenticationEntryPoint;
 import mutsa.delivery.global.config.security.JwtAuthenticationFilter;
 import mutsa.delivery.global.jwt.JwtProvider;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -18,6 +19,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
@@ -29,7 +31,19 @@ public class SecurityConfig {
     private final CustomAccessDeniedHandler accessDeniedHandler;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(
+            HttpSecurity http,
+            @Value("${app.security.swagger-public:true}") boolean swaggerPublic
+    ) throws Exception {
+
+        List<String> publicPaths = new ArrayList<>(List.of(
+                "/api/auth/**",
+                "/api/health"
+        ));
+        if (swaggerPublic) {
+            publicPaths.add("/swagger-ui/**");
+            publicPaths.add("/v3/api-docs/**");
+        }
 
         http
                 .csrf(AbstractHttpConfigurer::disable)
@@ -45,7 +59,7 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
                         // 1. 토큰 없이 무조건 허용할 경로들 (로그인, 회원가입, 헬스체크, 스웨거)
-                        .requestMatchers("/api/auth/**", "/api/health", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers(publicPaths.toArray(String[]::new)).permitAll()
 
                         // 2. 상점 조회는 GET 요청만 토큰 없이 허용 (POST, PATCH 등 상점 수정/생성은 차단)
                         .requestMatchers(HttpMethod.GET, "/api/shops/**").permitAll()
@@ -61,9 +75,11 @@ public class SecurityConfig {
     }
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
+    public CorsConfigurationSource corsConfigurationSource(
+            @Value("${app.cors.allowed-origins}") List<String> allowedOrigins
+    ) {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+        configuration.setAllowedOrigins(allowedOrigins);
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setExposedHeaders(List.of("Authorization")); // Authorization 헤더 추출 허용
