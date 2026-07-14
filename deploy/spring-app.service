@@ -1,15 +1,15 @@
 [Unit]
-Description=Mutsa Delivery API
+Description=Spring Boot Application
 After=network-online.target mariadb.service
 Wants=network-online.target
 
 [Service]
 Type=simple
-User=ubuntu
-Group=ubuntu
-WorkingDirectory=/opt/mutsa-delivery
-EnvironmentFile=/opt/mutsa-delivery/.env
-ExecStart=/usr/bin/java -Xms64m -Xmx192m -XX:+UseSerialGC -jar /opt/mutsa-delivery/app.jar
+User=appuser
+Group=appuser
+WorkingDirectory=/opt/spring-app
+EnvironmentFile=/opt/spring-app/.env
+ExecStart=/usr/bin/java -Xms64m -Xmx192m -XX:+UseSerialGC -jar /opt/spring-app/app.jar
 SuccessExitStatus=143
 Restart=on-failure
 RestartSec=10
