@@ -11,6 +11,8 @@ public interface OrderGroupRepository extends JpaRepository<OrderGroup, Long> {
 
     List<OrderGroup> findByUserIdOrderByCreatedAtDesc(Long userId);
 
+    long deleteAllByUser_Id(Long userId);
+
     @Query("select og from OrderGroup og " +
             "join fetch og.orders o " +
             "join fetch o.shop s " +
