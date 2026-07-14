@@ -10,6 +10,8 @@
 
 실제 `.env`에는 DB 비밀번호와 JWT 키가 들어가므로 Git에 커밋하지 않는다.
 
+Swagger UI와 OpenAPI 문서는 기본적으로 공개된다. 운영 환경에서 문서를 비공개로 전환하려면 `.env`에 `SWAGGER_ENABLED=false`를 설정한다. Swagger 화면이 공개되어도 인증이 필요한 API는 Bearer Token 없이 호출할 수 없다.
+
 ## 1. 템플릿 값 변경
 
 다음 예시값을 실제 운영 환경에 맞게 변경한다.
@@ -85,6 +87,7 @@ systemctl is-enabled spring-app.service
 systemctl is-active spring-app.service
 curl -i http://127.0.0.1:8080/api/health
 curl -i https://api.example.com/api/health
+curl -I https://api.example.com/swagger-ui/index.html
 ```
 
-systemd가 `enabled`, `active`이고 두 헬스체크가 모두 `200`을 반환하면 배포가 완료된 것이다.
+systemd가 `enabled`, `active`이고 헬스체크가 모두 `200`을 반환하며 Swagger UI가 응답하면 배포가 완료된 것이다.

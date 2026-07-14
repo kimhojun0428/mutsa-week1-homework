@@ -23,10 +23,10 @@ app:
   cors:
     allowed-origins: ${CORS_ALLOWED_ORIGINS}
   security:
-    swagger-public: false
+    swagger-public: ${SWAGGER_ENABLED:true}
 
 springdoc:
   api-docs:
-    enabled: false
+    enabled: ${SWAGGER_ENABLED:true}
   swagger-ui:
-    enabled: false
+    enabled: ${SWAGGER_ENABLED:true}
