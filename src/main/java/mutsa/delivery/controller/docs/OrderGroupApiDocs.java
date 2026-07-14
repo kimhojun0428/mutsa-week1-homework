@@ -1,7 +1,7 @@
 package mutsa.delivery.controller.docs;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter; // 💡 추가
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -43,12 +43,12 @@ public interface OrderGroupApiDocs {
             @ApiResponse(responseCode = "200", description = "주문 취소 및 환불 성공(COMMON_200_1)"),
             @ApiResponse(
                     responseCode = "400",
-                    description = "이미 완료된 주문 취소 불가(ORDER_400_2)",
+                    description = "조리중·배달중·배달완료 주문 취소 불가(ORDER_400)",
                     content = @Content(schema = @Schema(implementation = GlobalResponse.class))
             ),
             @ApiResponse(
                     responseCode = "404",
-                    description = "주문 내역 없음(ORDER_404_1)",
+                    description = "주문 내역 없음(ORDER_404)",
                     content = @Content(schema = @Schema(implementation = GlobalResponse.class))
             )
     })
@@ -63,7 +63,7 @@ public interface OrderGroupApiDocs {
             @ApiResponse(responseCode = "200", description = "주문 상세 조회 성공(COMMON_200_1)"),
             @ApiResponse(
                     responseCode = "404",
-                    description = "주문 내역을 찾을 수 없음(ORDER_404_1)",
+                    description = "주문 내역을 찾을 수 없음(ORDER_404)",
                     content = @Content(schema = @Schema(implementation = GlobalResponse.class))
             )
     })
