@@ -32,7 +32,6 @@ public interface OrderGroupApiDocs {
                     content = @Content(schema = @Schema(implementation = GlobalResponse.class))
             )
     })
-
     ResponseEntity<GlobalResponse<OrderGroupResponseDto>> createOrderGroup(
             @Parameter(hidden = true) Long userId,
             @RequestBody OrderGroupRequestDto requestDto
@@ -43,7 +42,7 @@ public interface OrderGroupApiDocs {
             @ApiResponse(responseCode = "200", description = "주문 취소 및 환불 성공(COMMON_200_1)"),
             @ApiResponse(
                     responseCode = "400",
-                    description = "조리중·배달중·배달완료 주문 취소 불가(ORDER_400)",
+                    description = "조리중·배달중·배달완료 상태로 인한 취소 불가(ORDER_400_1) / 이미 취소된 주문(ORDER_400_2)",
                     content = @Content(schema = @Schema(implementation = GlobalResponse.class))
             ),
             @ApiResponse(
@@ -52,7 +51,6 @@ public interface OrderGroupApiDocs {
                     content = @Content(schema = @Schema(implementation = GlobalResponse.class))
             )
     })
-
     ResponseEntity<GlobalResponse<Void>> cancelOrderGroup(
             @Parameter(hidden = true) Long userId,
             @PathVariable("orderGroupId") Long orderGroupId
@@ -67,7 +65,6 @@ public interface OrderGroupApiDocs {
                     content = @Content(schema = @Schema(implementation = GlobalResponse.class))
             )
     })
-
     ResponseEntity<GlobalResponse<OrderGroupDetailResponseDto>> getOrderGroupDetail(
             @Parameter(hidden = true) Long userId,
             @PathVariable("orderGroupId") Long orderGroupId
