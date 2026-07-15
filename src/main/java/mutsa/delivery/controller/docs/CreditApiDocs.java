@@ -22,7 +22,7 @@ public interface CreditApiDocs {
             @ApiResponse(responseCode = "201", description = "크레딧 변동 성공(COMMON_201_1)"),
             @ApiResponse(
                     responseCode = "400",
-                    description = "잔액 부족(CREDIT_400_1) / 잘못된 요청",
+                    description = "잔액 부족(CREDIT_400_1) / 금액이 1 미만(CREDIT_400_2) / 필수값 누락·JSON 형식 오류(INVALID_REQUEST) / 필드 타입 오류(INVALID_TYPE)",
                     content = @Content(schema = @Schema(implementation = GlobalResponse.class))
             ),
             @ApiResponse(

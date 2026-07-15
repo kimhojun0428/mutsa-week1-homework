@@ -43,14 +43,29 @@ public class GlobalExceptionHandler {
                 .body(GlobalResponse.onFailure(errorCode, errors));
     }
 
-    // 잘못된 JSON 형식 / 본문 누락 -> INVALID_REQUEST
+    // JSON 값의 타입 불일치는 INVALID_TYPE, 문법 오류와 본문 누락은 INVALID_REQUEST
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<GlobalResponse<Void>> handleHttpMessageNotReadableException(
             HttpMessageNotReadableException e
     ) {
-        BaseErrorCode errorCode = GeneralErrorCode.INVALID_REQUEST;
+        BaseErrorCode errorCode = isJsonTypeMismatch(e)
+                ? GeneralErrorCode.INVALID_TYPE
+                : GeneralErrorCode.INVALID_REQUEST;
         return ResponseEntity.status(errorCode.getHttpStatus())
                 .body(GlobalResponse.onFailure(errorCode, null));
+    }
+
+    private boolean isJsonTypeMismatch(Throwable throwable) {
+        Throwable cause = throwable;
+        while (cause != null) {
+            String exceptionName = cause.getClass().getSimpleName();
+            if ("InvalidFormatException".equals(exceptionName)
+                    || "MismatchedInputException".equals(exceptionName)) {
+                return true;
+            }
+            cause = cause.getCause();
+        }
+        return false;
     }
 
     // 타입 불일치 (예: 숫자 자리에 문자) -> INVALID_TYPE
