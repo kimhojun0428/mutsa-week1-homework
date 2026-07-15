@@ -205,7 +205,14 @@ Response `data` (배열):
 
 ```json
 [
-  { "shopId": 1, "name": "냠냠 분식", "contact": "02-320-0001", "location": "T101", "category": "SNACK" }
+  {
+    "shopId": 1,
+    "name": "냠냠 분식",
+    "imageUrl": "https://week7-homework.vercel.app/nyamnyam.jpeg",
+    "contact": "02-320-0001",
+    "location": "T101",
+    "category": "SNACK"
+  }
 ]
 ```
 
