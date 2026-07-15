@@ -252,7 +252,7 @@ Response `data` (배열):
 ```json
 {
   "items": [
-    { "cartItemId": 1, "menuId": 1, "menuOptionId": 2, "name": "떡볶이", "price": 12000, "quantity": 2 }
+    { "cartItemId": 1, "menuId": 1, "menuOptionId": 2, "name": "떡볶이", "optionName": "맵게", "price": 12000, "quantity": 2 }
   ],
   "totalPrice": 24000
 }
