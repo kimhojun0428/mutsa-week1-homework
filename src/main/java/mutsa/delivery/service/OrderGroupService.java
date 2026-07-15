@@ -104,6 +104,25 @@ public class OrderGroupService {
             throw new ProjectException(OrderGroupErrorCode.ORDER_GROUP_NOT_FOUND);
         }
 
+        boolean hasAlreadyCancelled = orderGroup.getOrders().stream()
+                .anyMatch(order -> order.getOrderStatus() == OrderStatus.CANCELED);
+
+        if (hasAlreadyCancelled) {
+            throw new ProjectException(OrderErrorCode.ORDER_ALREADY_CANCELED);
+        }
+
+        // 3. 상태 검증: 하위 주문 중 하나라도 취소 불가능한 상태(조리중, 배달중, 배달완료)가 있으면 예외 처리
+        boolean hasUncancellableOrder = orderGroup.getOrders().stream()
+                .anyMatch(order -> {
+                    OrderStatus status = order.getOrderStatus();
+                    return status == OrderStatus.PREPARING  // 조리중
+                            || status == OrderStatus.DELIVERING // 배달중
+                            || status == OrderStatus.DELIVERED; // 배달완료
+                });
+
+        if (hasUncancellableOrder) {
+            throw new ProjectException(OrderErrorCode.ORDER_CANNOT_CANCEL);
+        }
         orderGroup.cancelOrders();
 
         orderGroup.getOrders().forEach(order ->
