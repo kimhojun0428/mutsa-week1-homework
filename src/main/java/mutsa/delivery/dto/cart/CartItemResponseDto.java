@@ -7,6 +7,7 @@ public record CartItemResponseDto(
         Long menuId,
         Long menuOptionId,
         String name,
+        String optionName,
         long price,
         int quantity
 ) {
@@ -16,6 +17,7 @@ public record CartItemResponseDto(
                 cartItem.getMenu().getId(),
                 cartItem.getMenuOption().getId(),
                 cartItem.getMenu().getName(),
+                cartItem.getMenuOption().getName(),
                 cartItem.getUnitPrice(),
                 cartItem.getQuantity()
         );
