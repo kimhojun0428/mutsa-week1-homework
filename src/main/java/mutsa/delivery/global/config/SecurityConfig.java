@@ -5,6 +5,8 @@ import mutsa.delivery.global.config.security.CustomAccessDeniedHandler;
 import mutsa.delivery.global.config.security.CustomAuthenticationEntryPoint;
 import mutsa.delivery.global.config.security.JwtAuthenticationFilter;
 import mutsa.delivery.global.jwt.JwtProvider;
+import mutsa.delivery.global.oauth2.handler.OAuth2FailureHandler;
+import mutsa.delivery.global.oauth2.handler.OAuth2SuccessHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +32,10 @@ public class SecurityConfig {
     private final CustomAuthenticationEntryPoint authenticationEntryPoint;
     private final CustomAccessDeniedHandler accessDeniedHandler;
 
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
+    private final OAuth2FailureHandler oAuth2FailureHandler;
+    private final DefaultOAuth2UserService customOAuth2UserService;
+
     @Bean
     public SecurityFilterChain filterChain(
             HttpSecurity http,
@@ -38,7 +44,9 @@ public class SecurityConfig {
 
         List<String> publicPaths = new ArrayList<>(List.of(
                 "/api/auth/**",
-                "/api/health"
+                "/api/health",
+                "/oauth2/authorization/**",
+                "/login/oauth2/code/**"
         ));
         if (swaggerPublic) {
             publicPaths.add("/swagger-ui/**");
@@ -55,6 +63,20 @@ public class SecurityConfig {
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(authenticationEntryPoint)
                         .accessDeniedHandler(accessDeniedHandler)
+                )
+
+                .oauth2Login(oauth2 -> oauth2
+                        .authorizationEndpoint(authorization -> authorization
+                                .baseUri("/oauth2/authorization")
+                        )
+                        .redirectionEndpoint(redirection -> redirection
+                                .baseUri("/login/oauth2/code/*")
+                        )
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(customOAuth2UserService) // B의 CustomOAuth2UserService 연결
+                        )
+                        .successHandler(oAuth2SuccessHandler) // A의 SuccessHandler 연결
+                        .failureHandler(oAuth2FailureHandler) // A의 FailureHandler 연결
                 )
 
                 .authorizeHttpRequests(auth -> auth
@@ -75,11 +97,14 @@ public class SecurityConfig {
     }
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource(
-            @Value("${app.cors.allowed-origins}") List<String> allowedOrigins
-    ) {
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(allowedOrigins);
+
+        configuration.setAllowedOrigins(List.of(
+                "http://localhost:5173",
+                "http://localhost:8080",
+                "https://mutsa.dev.me.kr"
+        ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setExposedHeaders(List.of("Authorization")); // Authorization 헤더 추출 허용
@@ -89,5 +114,4 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
 }
