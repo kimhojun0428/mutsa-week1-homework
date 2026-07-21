@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import mutsa.delivery.domain.User;
 import mutsa.delivery.global.jwt.JwtProvider;
+import mutsa.delivery.global.oauth2.CustomOAuth2User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
