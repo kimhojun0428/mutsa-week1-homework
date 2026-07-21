@@ -50,6 +50,24 @@ public class JwtProvider {
                 .compact();
     }
 
+    /**
+     * 사용자 ID만으로 Access Token을 발급한다. (OAuth2 SuccessHandler → 개발자 A 계약)
+     *
+     * <p>인증 필터는 subject(userId)만 사용하므로 email claim 없이도 동작한다.
+     */
+    public String createAccessToken(Long userId) {
+
+        Date now = new Date();
+        Date expiredAt = new Date(now.getTime() + expirationMs);
+
+        return Jwts.builder()
+                .subject(String.valueOf(userId))
+                .issuedAt(now)
+                .expiration(expiredAt)
+                .signWith(key)
+                .compact();
+    }
+
     /** 토큰의 서명·만료를 검증하고 사용자 ID를 추출한다. */
     public Long getUserId(String token) {
         return Long.valueOf(parseClaims(token).getSubject());

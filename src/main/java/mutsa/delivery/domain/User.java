@@ -22,7 +22,8 @@ public class User extends BaseTimeEntity {
     @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(nullable = false)
+    // 소셜 회원은 비밀번호가 없으므로 nullable 이다.
+    @Column
     private String password;
 
     @Column(nullable = false)
@@ -31,12 +32,29 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private Long credit;
 
+    // 가입 경로(LOCAL / KAKAO). 기존 회원은 모두 LOCAL 이다.
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private SocialType provider;
+
+    // 소셜 공급자의 고유 식별자. LOCAL 회원은 null 이다.
+    @Column
+    private String providerId;
+
+    // 소셜 프로필 이미지 URL. 없으면 null 이다.
+    @Column
+    private String profileImageUrl;
+
     @Builder(access = AccessLevel.PRIVATE)
-    private User(String email, String password, String name) {
+    private User(String email, String password, String name,
+                 SocialType provider, String providerId, String profileImageUrl) {
         this.email = email;
         this.password = password;
         this.name = name;
         this.credit = 0L;
+        this.provider = provider;
+        this.providerId = providerId;
+        this.profileImageUrl = profileImageUrl;
     }
 
     public static User create(String email, String password, String name) {
@@ -44,6 +62,18 @@ public class User extends BaseTimeEntity {
                 .email(email)
                 .password(password)
                 .name(name)
+                .provider(SocialType.LOCAL)
+                .build();
+    }
+
+    public static User createSocial(String email, String name, String profileImageUrl,
+                                    SocialType provider, String providerId) {
+        return User.builder()
+                .email(email)
+                .name(name)
+                .profileImageUrl(profileImageUrl)
+                .provider(provider)
+                .providerId(providerId)
                 .build();
     }
 

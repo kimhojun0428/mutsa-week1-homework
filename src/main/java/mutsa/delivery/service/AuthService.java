@@ -55,4 +55,14 @@ public class AuthService {
 
         return TokenResponseDto.of(accessToken);
     }
+
+    /**
+     * 로그아웃. 현재는 무상태(stateless) JWT 방식이라 서버가 파기할 세션·토큰 저장소가 없으므로,
+     * 실제 토큰 삭제는 클라이언트가 담당한다(저장한 Access Token 제거). 인증 여부와 무관하게 멱등하다.
+     *
+     * <p>향후 RefreshToken 저장소나 토큰 블랙리스트를 도입하면 이 지점에서 파기 로직을 추가한다.
+     */
+    public void logout(Long userId) {
+        // no-op
+    }
 }
