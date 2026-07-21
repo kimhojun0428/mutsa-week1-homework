@@ -1,6 +1,7 @@
 package mutsa.delivery.controller.docs;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -51,4 +52,14 @@ public interface AuthApiDocs {
             )
     })
     ResponseEntity<GlobalResponse<TokenResponseDto>> login(LoginRequestDto requestDto);
+
+    @Operation(
+            summary = "로그아웃",
+            description = "클라이언트가 저장한 Access Token을 삭제하도록 하는 무상태 로그아웃입니다. "
+                    + "서버는 별도 세션·토큰 저장소가 없어 상태를 변경하지 않으며 항상 성공합니다."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "로그아웃 성공(COMMON_200_1)")
+    })
+    ResponseEntity<GlobalResponse<Void>> logout(@Parameter(hidden = true) Long userId);
 }

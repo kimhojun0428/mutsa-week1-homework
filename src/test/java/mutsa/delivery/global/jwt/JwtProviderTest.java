@@ -28,6 +28,16 @@ class JwtProviderTest {
     }
 
     @Test
+    @DisplayName("userId만으로 발급한 Access Token에서도 사용자 ID를 추출할 수 있다")
+    void createAccessToken_thenGetUserId() {
+        JwtProvider jwtProvider = new JwtProvider(SECRET, ONE_HOUR);
+
+        String token = jwtProvider.createAccessToken(42L);
+
+        assertThat(jwtProvider.getUserId(token)).isEqualTo(42L);
+    }
+
+    @Test
     @DisplayName("만료된 토큰은 EXPIRED_TOKEN 예외를 던진다")
     void expiredToken() {
         JwtProvider expiredProvider = new JwtProvider(SECRET, -1000L); // 이미 만료된 토큰 발급

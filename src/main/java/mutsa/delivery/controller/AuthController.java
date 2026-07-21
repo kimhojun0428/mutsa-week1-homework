@@ -8,6 +8,7 @@ import mutsa.delivery.dto.auth.TokenResponseDto;
 import mutsa.delivery.dto.user.SignUpRequestDto;
 import mutsa.delivery.dto.user.UserResponseDto;
 import mutsa.delivery.global.apiPayload.GlobalResponse;
+import mutsa.delivery.global.config.security.AuthUser;
 import mutsa.delivery.service.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,5 +45,15 @@ public class AuthController implements AuthApiDocs {
         TokenResponseDto responseDto = authService.login(requestDto);
 
         return ResponseEntity.ok(GlobalResponse.onSuccess(responseDto));
+    }
+
+    @Override
+    @PostMapping("/logout")
+    public ResponseEntity<GlobalResponse<Void>> logout(
+            @AuthUser Long userId
+    ) {
+        authService.logout(userId);
+
+        return ResponseEntity.ok(GlobalResponse.onSuccess());
     }
 }
