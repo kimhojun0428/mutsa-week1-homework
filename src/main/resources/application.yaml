@@ -16,8 +16,8 @@ spring:
       client:
         registration:
           kakao:
-            client-id: ${KAKAO_CLIENT_ID:YOUR_REST_API_KEY}
-            client-secret: ${KAKAO_CLIENT_SECRET:YOUR_CLIENT_SECRET} # 필수 아님 (선택)
+            client-id: ${KAKAO_CLIENT_ID}
+            client-secret: ${KAKAO_CLIENT_SECRET}
             redirect-uri: "https://mutsa.dev.me.kr/login/oauth2/code/kakao"
             authorization-grant-type: authorization_code
             client-authentication-method: client_secret_post
