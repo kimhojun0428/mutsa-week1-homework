@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import mutsa.delivery.domain.User;
 import mutsa.delivery.global.jwt.JwtProvider;
 import mutsa.delivery.global.oauth2.CustomOAuth2User;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -20,6 +21,9 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     private final JwtProvider jwtProvider; // C가 제공하는 JwtProvider
 
+    @Value("${app.oauth2.frontend-base-url}")
+    private String frontendBaseUrl;
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
@@ -32,7 +36,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String accessToken = jwtProvider.createAccessToken(user.getId());
 
         // 3. 프론트엔드로 토큰을 쿼리 스트링에 실어 리다이렉트
-        String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:5173/oauth/success")
+        String targetUrl = UriComponentsBuilder.fromUriString(frontendBaseUrl + "/oauth/success")
                 .queryParam("accessToken", accessToken)
                 .build()
                 .toUriString();
