@@ -11,13 +11,13 @@ npm run dev
 
 그다음 브라우저에서 `http://localhost:5173`을 엽니다.
 
-백엔드는 별도 터미널에서 `localhost:8080`으로 실행되어 있어야 하며,
-`KAKAO_CLIENT_ID`와 `KAKAO_CLIENT_SECRET` 환경변수가 필요합니다.
+테스트 화면은 운영 백엔드 `https://mutsa.dev.me.kr`을 사용하므로
+로컬에서 백엔드를 별도로 실행할 필요는 없습니다.
 
 카카오 개발자 콘솔에는 Redirect URI로 아래 주소를 등록합니다.
 
 ```text
-http://localhost:8080/login/oauth2/code/kakao
+https://mutsa.dev.me.kr/login/oauth2/code/kakao
 ```
 
 로그인이 완료되면 화면이 Access Token을 저장하고 `GET /api/users/me`를 호출해

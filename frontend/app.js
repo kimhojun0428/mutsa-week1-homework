@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:8080";
+const API_BASE_URL = "https://mutsa.dev.me.kr";
 const TOKEN_STORAGE_KEY = "mutsa_oauth_access_token";
 
 const elements = {
