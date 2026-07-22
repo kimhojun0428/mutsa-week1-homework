@@ -20,6 +20,7 @@ public class OAuth2FailureHandler extends SimpleUrlAuthenticationFailureHandler 
         String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:5173/oauth/failure")
                 .queryParam("error", exception.getLocalizedMessage())
                 .build()
+                .encode()
                 .toUriString();
 
         getRedirectStrategy().sendRedirect(request, response, targetUrl);

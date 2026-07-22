@@ -5,6 +5,7 @@ import mutsa.delivery.global.config.security.CustomAccessDeniedHandler;
 import mutsa.delivery.global.config.security.CustomAuthenticationEntryPoint;
 import mutsa.delivery.global.config.security.JwtAuthenticationFilter;
 import mutsa.delivery.global.jwt.JwtProvider;
+import mutsa.delivery.global.oauth2.CustomOAuth2UserService;
 import mutsa.delivery.global.oauth2.handler.OAuth2FailureHandler;
 import mutsa.delivery.global.oauth2.handler.OAuth2SuccessHandler;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,7 +35,7 @@ public class SecurityConfig {
 
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final OAuth2FailureHandler oAuth2FailureHandler;
-    private final DefaultOAuth2UserService customOAuth2UserService;
+    private final CustomOAuth2UserService customOAuth2UserService;
 
     @Bean
     public SecurityFilterChain filterChain(

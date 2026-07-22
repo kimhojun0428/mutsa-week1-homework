@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="카카오 OAuth2 로그인 테스트 화면" />
+    <title>카카오 로그인 테스트</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <main class="page-shell">
+      <section class="login-card" aria-labelledby="page-title">
+        <div class="eyebrow">
+          <span class="status-dot" aria-hidden="true"></span>
+          OAuth2 TEST CONSOLE
+        </div>
+
+        <header>
+          <h1 id="page-title">카카오 로그인 테스트</h1>
+          <p>
+            카카오 인증이 끝나면 자동 가입 또는 로그인이 처리되고,
+            백엔드에서 조회한 내 정보를 바로 보여줍니다.
+          </p>
+        </header>
+
+        <div id="notice" class="notice" role="status" aria-live="polite">
+          로그인 전입니다. 아래 버튼을 눌러 테스트를 시작하세요.
+        </div>
+
+        <section id="empty-state" class="empty-state">
+          <div class="kakao-mark" aria-hidden="true">K</div>
+          <h2>아직 로그인하지 않았어요</h2>
+          <p>테스트 중인 백엔드는 <code>localhost:8080</code>을 사용합니다.</p>
+          <button id="login-button" class="kakao-button" type="button">
+            카카오로 시작하기
+          </button>
+        </section>
+
+        <section id="profile-state" class="profile-state" hidden>
+          <div class="profile-heading">
+            <div id="avatar-fallback" class="avatar-fallback" aria-hidden="true">U</div>
+            <img id="profile-image" class="profile-image" alt="카카오 프로필 이미지" hidden />
+            <div>
+              <span class="success-label">인증 성공</span>
+              <h2 id="profile-name">사용자</h2>
+              <p id="profile-email">-</p>
+            </div>
+          </div>
+
+          <dl class="profile-grid">
+            <div>
+              <dt>회원 ID</dt>
+              <dd id="profile-id">-</dd>
+            </div>
+            <div>
+              <dt>로그인 방식</dt>
+              <dd id="profile-provider">-</dd>
+            </div>
+            <div>
+              <dt>보유 크레딧</dt>
+              <dd id="profile-credit">-</dd>
+            </div>
+          </dl>
+
+          <details class="raw-response">
+            <summary>백엔드 응답 JSON 보기</summary>
+            <pre id="response-json"></pre>
+          </details>
+
+          <div class="button-row">
+            <button id="reload-button" class="secondary-button" type="button">정보 다시 불러오기</button>
+            <button id="logout-button" class="text-button" type="button">로그아웃</button>
+          </div>
+        </section>
+      </section>
+
+      <p class="helper-text">
+        이 화면은 확인용입니다. Access Token은 현재 브라우저의 로컬 저장소에만 보관됩니다.
+      </p>
+    </main>
+  </body>
+</html>
