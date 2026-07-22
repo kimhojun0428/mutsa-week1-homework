@@ -23,7 +23,7 @@ class OAuth2FailureHandlerTest {
                 new OAuth2Error("email_not_provided"), message);
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        new OAuth2FailureHandler().onAuthenticationFailure(
+        new OAuth2FailureHandler("http://localhost:5173").onAuthenticationFailure(
                 new MockHttpServletRequest(), response, exception);
 
         String redirectedUrl = response.getRedirectedUrl();

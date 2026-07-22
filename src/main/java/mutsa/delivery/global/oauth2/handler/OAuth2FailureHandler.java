@@ -14,16 +14,22 @@ import java.io.IOException;
 @Component
 public class OAuth2FailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
-    @Value("${app.frontend.url:http://localhost:5173}")
-    private String frontendUrl;
+    private final String frontendBaseUrl;
+
+    public OAuth2FailureHandler(
+            @Value("${app.oauth2.frontend-base-url}") String frontendBaseUrl
+    ) {
+        this.frontendBaseUrl = frontendBaseUrl;
+    }
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                                         AuthenticationException exception) throws IOException, ServletException {
 
-        String targetUrl = UriComponentsBuilder.fromUriString(frontendUrl + "/oauth/failure")
+        String targetUrl = UriComponentsBuilder.fromUriString(frontendBaseUrl + "/oauth/failure")
                 .queryParam("error", exception.getLocalizedMessage())
                 .build()
+                .encode()
                 .toUriString();
 
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
