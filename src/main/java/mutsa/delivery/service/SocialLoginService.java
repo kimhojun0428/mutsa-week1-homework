@@ -1,9 +1,12 @@
 package mutsa.delivery.service;
 
 import lombok.RequiredArgsConstructor;
+import mutsa.delivery.domain.SocialType;
 import mutsa.delivery.domain.User;
 import mutsa.delivery.global.oauth2.OAuth2UserInfo;
 import mutsa.delivery.repository.UserRepository;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,8 +32,15 @@ public class SocialLoginService {
     }
 
     private User register(OAuth2UserInfo userInfo) {
-        // providerId 를 유일 키로 취급한다. 동일 이메일의 기존 LOCAL 계정과의 병합은
-        // 과제 범위상 다루지 않는다(필요 시 후속 확장).
+        // 소셜 회원 매칭은 (provider, providerId)를 유일 키로 한다.
+        // 다만 User.email 은 unique 제약이 있으므로, 같은 이메일이 이미 다른 방식(일반 가입 등)으로
+        // 등록돼 있으면 그대로 저장 시 DB 제약 위반(500)이 난다. 정책상 자동 계정 연동은 하지 않고,
+        // "차단 + 안내"로 처리해 사용자가 기존 로그인 방식을 쓰도록 유도한다.
+        userRepository.findByEmail(userInfo.getEmail())
+                .ifPresent(existing -> {
+                    throw emailAlreadyRegistered(existing);
+                });
+
         User user = User.createSocial(
                 userInfo.getEmail(),
                 userInfo.getNickname(),
@@ -39,5 +49,18 @@ public class SocialLoginService {
                 userInfo.getProviderId()
         );
         return userRepository.save(user);
+    }
+
+    /**
+     * OAuth2 인증 흐름에서 발생한 실패는 {@link OAuth2AuthenticationException}(AuthenticationException 계열)로
+     * 던져야 OAuth2FailureHandler를 거쳐 프론트 실패 페이지로 리다이렉트된다.
+     * 일반 RuntimeException은 이 흐름을 벗어나 500으로 노출된다.
+     */
+    private static OAuth2AuthenticationException emailAlreadyRegistered(User existing) {
+        String description = existing.getProvider() == SocialType.LOCAL
+                ? "이미 일반 회원가입에 사용된 이메일입니다. 이메일·비밀번호로 로그인해주세요."
+                : "이미 사용 중인 이메일입니다.";
+        return new OAuth2AuthenticationException(
+                new OAuth2Error("email_already_registered"), description);
     }
 }
